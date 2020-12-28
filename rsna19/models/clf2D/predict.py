@@ -1,18 +1,20 @@
 import argparse
 import os
+
+import albumentations
+import albumentations.augmentations.functional
+import albumentations.pytorch
+import numpy as np
+import pandas as pd
 import torch
 from torch.utils.data import DataLoader
 from tqdm import tqdm
-import numpy as np
-import pandas as pd
 
-from rsna19.data import dataset
 from rsna19.configs.base_config import BaseConfig
+from rsna19.data import dataset
 from rsna19.models.clf2D.experiments import MODELS
 from rsna19.models.clf2D.train import build_model_str
-import albumentations
-import albumentations.pytorch
-import albumentations.augmentations.functional
+
 
 # import ttach as tta
 
@@ -72,14 +74,19 @@ def predict(model_name, fold, epoch, is_test, df_out_path, mode='normal', run=No
 
     model.eval()
     print(f'load {checkpoints_dir}/{epoch:03}.pt')
-    checkpoint = torch.load(f'{checkpoints_dir}/{epoch:03}.pt')
-    model.load_state_dict(checkpoint['model_state_dict'])
-    model = model.cuda()
+
+    if torch.cuda.is_available():
+        checkpoint = torch.load(f'{checkpoints_dir}/{epoch:03}.pt')
+        model.load_state_dict(checkpoint['model_state_dict'])
+        model = model.cuda()
+    else:
+        checkpoint = torch.load(f'{checkpoints_dir}/{epoch:03}.pt', map_location=lambda storage, loc: storage)
+        model.load_state_dict(checkpoint['model_state_dict'])
 
     data_loader = DataLoader(dataset_valid,
                              shuffle=False,
                              num_workers=8,
-                             batch_size=model_info.batch_size*2)
+                             batch_size=model_info.batch_size * 2)
 
     all_paths = []
     all_study_id = []
@@ -127,7 +134,8 @@ def predict_test(model_name, fold, epoch, mode='normal', run=None):
     if os.path.exists(df_out_path):
         print('Skip existing', df_out_path)
     else:
-        predict(model_name=model_name, fold=fold, epoch=epoch, is_test=True, df_out_path=df_out_path, mode=mode, run=run)
+        predict(model_name=model_name, fold=fold, epoch=epoch, is_test=True, df_out_path=df_out_path, mode=mode,
+                run=run)
 
 
 def predict_oof(model_name, fold, epoch, mode='normal', run=None):
@@ -139,7 +147,8 @@ def predict_oof(model_name, fold, epoch, mode='normal', run=None):
     if os.path.exists(df_out_path):
         print('Skip existing', df_out_path)
     else:
-        predict(model_name=model_name, fold=fold, epoch=epoch, is_test=False, df_out_path=df_out_path, mode=mode, run=run)
+        predict(model_name=model_name, fold=fold, epoch=epoch, is_test=False, df_out_path=df_out_path, mode=mode,
+                run=run)
 
 
 if __name__ == '__main__':

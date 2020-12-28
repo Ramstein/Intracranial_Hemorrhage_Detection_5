@@ -44,7 +44,7 @@ def main():
             'RescaleSlope']
 
     d = defaultdict(list)
-    jobs = [('train', BaseConfig.train_dir), ('test', BaseConfig.test_dir), ('test2', BaseConfig.test2_dir)]
+    jobs = [('train', BaseConfig.train_dir), ('test', BaseConfig.test_dir)]
     for subset, subset_dir in jobs:
         for root, dirs, files in os.walk(subset_dir):
             for file in tqdm(files):

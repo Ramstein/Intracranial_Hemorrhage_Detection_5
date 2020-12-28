@@ -2,7 +2,7 @@ from rsna19.configs.base_config import BaseConfig
 
 
 class Config(BaseConfig):
-    train_out_dir = '/kolos/m2/ct/models/classification/rsna/0036_3x3_pretrained_448/0123'
+    train_out_dir = '/home/ec2-user/SageMaker/rsna/0036_3x3_pretrained_448/0123'
 
     train_dataset_file = '5fold.csv'
     val_dataset_file = '5fold.csv'
@@ -17,7 +17,7 @@ class Config(BaseConfig):
 
     # 'imagenet', None or path to weights
     # pretrained = 'imagenet'
-    pretrained = '/kolos/m2/ct/models/classification/rsna/0034_resnet34_3c/0123/models/_ckpt_epoch_3.ckpt'
+    pretrained = '/home/ec2-user/SageMaker/rsna/0034_resnet34_3c/0123/models/_ckpt_epoch_3.ckpt'
 
     lr = 1e-4
     batch_size = 24  # 16 (3, 512, 512) images fits on TITAN XP

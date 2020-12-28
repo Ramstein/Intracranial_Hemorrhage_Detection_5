@@ -1,5 +1,6 @@
 """ Load dicom files using vtk package """
 import json
+import multiprocessing
 
 import shutil
 
@@ -201,18 +202,10 @@ def process_scan(scan_dir):
 
 
 def main():
-    with ProcessPoolExecutor(max_workers=16) as executor:
+    with ProcessPoolExecutor(max_workers=multiprocessing.cpu_count()) as executor:
         paths = glob(f'{BaseConfig.data_root}/train/*/dicom/') + \
-                glob(f'{BaseConfig.data_root}/test/*/dicom/') + \
-                glob(f'{BaseConfig.data_root}/test2/*/dicom/')
-        # paths = ['/kolos/m2/ct/data/rsna/train/ID_0dc7645c14/dicom/',
-        #          '/kolos/m2/ct/data/rsna/train/ID_fcc85d6ebc/dicom/',
-        #          '/kolos/m2/ct/data/rsna/test/ID_be88c23b42/dicom/',
-        #          '/kolos/m2/ct/data/rsna/train/ID_99e4e009da/dicom/',
-        #          '/kolos/m2/ct/data/rsna/train/ID_f03b07e5e4/dicom/',
-        #          '/kolos/m2/ct/data/rsna/train/ID_c9a49565ec/dicom/',
-        #          '/kolos/m2/ct/data/rsna/train/ID_3bb2b2176b/dicom/',
-        #          '/kolos/m2/ct/data/rsna/test/ID_a06f6350dc/dicom/']
+                glob(f'{BaseConfig.data_root}/test/*/dicom/')
+
         list(tqdm.tqdm(executor.map(process_scan, paths), total=len(paths)))
 
 

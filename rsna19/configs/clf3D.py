@@ -2,7 +2,7 @@ from rsna19.configs.base_config import BaseConfig
 
 
 class Config(BaseConfig):
-    train_out_dir = '/kolos/m2/ct/models/classification/rsna/0024_3d/0_1_2_3'
+    train_out_dir = '/home/ec2-user/SageMaker/rsna/0024_3d/0_1_2_3'
 
     dataset_file = '5fold.csv'
     data_version = '3d'  # '3d', 'npy', 'npy256' etc.
@@ -10,7 +10,7 @@ class Config(BaseConfig):
     val_folds = [4]
 
     backbone = 'resnet18'
-    pretrained = '/kolos/m2/ct/models/classification/rsna/pretrained_3d/resnet18_23dataset.pth'
+    pretrained = '/home/ec2-user/SageMaker/rsna/pretrained_3d/resnet18_23dataset.pth'
     resnet_shortcut = 'A'   # 'A' or 'B'
     new_layer_names = ['fc']
 
